@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
@@ -173,9 +174,15 @@ public class SiteWatchRender {
       makeParentDirectories(outFile);
 
       if (!templateName.toLowerCase().endsWith(".html")) {
-        // not a tempate so just copy the file
-        Files.copy(file, outFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        log.debug("... copy file: {}", templateName);
+        // not a template so just copy the file
+        if (file.toFile().exists()) {
+          try {
+            Files.copy(file, outFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            log.debug("... copy file: {}", templateName);
+          } catch (NoSuchFileException e) {
+            log.trace("... ignore file not found (IDE removed): {}", templateName);
+          }
+        }
         return;
       }
 
