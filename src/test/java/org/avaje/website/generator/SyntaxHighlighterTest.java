@@ -26,4 +26,12 @@ public class SyntaxHighlighterTest {
     String out = highlighter.filter(content);
     System.out.println(out);
   }
+
+  @Test
+  public void testUsePre() throws IOException {
+
+    String content = IOUtil.readUtf8(this.getClass().getResourceAsStream("/input/usePre.html"));
+    String out = highlighter.filter(content);
+    System.out.println(out);
+  }
 }

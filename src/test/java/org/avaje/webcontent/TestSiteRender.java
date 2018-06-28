@@ -18,8 +18,8 @@ public class TestSiteRender {
   @Test
   public void testWatcher() throws Exception {
 
-    File source = new File("/home/rob/github/avaje-ebeanorm-website");
-    File dest = new File("/home/rob/github/ebean-orm.github.io");
+    File source = new File("/home/rob/github/ebean-dir/ebean-website");
+    File dest = new File("/home/rob/github/ebean-dir/ebean-orm.github.io");
 
     SiteWatchRender site = new SiteWatchRender(source, dest);
     site.render();

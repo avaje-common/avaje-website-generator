@@ -15,8 +15,13 @@ public class SyntaxHighlighter implements ContentFilter {
 
   @Override
   public String filter(String content) {
-    
-    int start = content.indexOf("```");
+
+    boolean usePre = true;
+    int start = content.indexOf("<pre content");
+    if (start == -1) {
+      start = content.indexOf("```");
+      usePre = false;
+    }
     if (start == -1) {
       return content;
     }
@@ -25,13 +30,21 @@ public class SyntaxHighlighter implements ContentFilter {
     if (endOfStartLine == -1) {
       return content;
     }
-    
-    int end = content.indexOf("```", endOfStartLine);
+
+    int endOfEnd;
+    int end;
+    if (usePre) {
+      end = content.indexOf("</pre>", endOfStartLine);
+      endOfEnd = end + 6;
+    } else {
+      end = content.indexOf("```", endOfStartLine);
+      endOfEnd = end + 3;
+    }
     if (end == -1) {
       return content;
     }
     
-    String language = determineLanguage(content, start, endOfStartLine);
+    String language = determineLanguage(usePre, content, start, endOfStartLine);
 
     StringBuilder buffer = new StringBuilder(content.length() + 1000);
 
@@ -45,7 +58,7 @@ public class SyntaxHighlighter implements ContentFilter {
     buffer.append(content.substring(0, start));
     buffer.append(highlightedSource);
 
-    String remainder = content.substring(end + 3);
+    String remainder = content.substring(endOfEnd);
     buffer.append(filter(remainder));
     return buffer.toString();
   }
@@ -105,10 +118,19 @@ public class SyntaxHighlighter implements ContentFilter {
     return  ch == '\n' || ch == '\r';
   }
 
-  private String determineLanguage(String content, int start, int endOfStartLine) {
-    
-    String restOfLine = content.substring(start + 3, endOfStartLine);
-    return restOfLine.trim().toLowerCase();
+  private String determineLanguage(boolean usePre, String content, int start, int endOfStartLine) {
+
+    if (usePre) {
+      //"<pre content='asd'>";
+      int p0 = start + 14;
+      int p1 = content.indexOf('>', p0) - 1;
+      String restOfLine = content.substring(p0, p1);
+      return restOfLine.trim().toLowerCase();
+
+    } else {
+      String restOfLine = content.substring(start + 3, endOfStartLine);
+      return restOfLine.trim().toLowerCase();
+    }
   }
 
   
