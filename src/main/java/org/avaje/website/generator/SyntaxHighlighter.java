@@ -43,7 +43,7 @@ public class SyntaxHighlighter implements ContentFilter {
     if (end == -1) {
       return content;
     }
-    
+
     String language = determineLanguage(usePre, content, start, endOfStartLine);
 
     StringBuilder buffer = new StringBuilder(content.length() + 1000);
@@ -115,7 +115,7 @@ public class SyntaxHighlighter implements ContentFilter {
 
   private boolean startsWithNewLine(String content) {
     char ch = content.charAt(0);
-    return  ch == '\n' || ch == '\r';
+    return ch == '\n' || ch == '\r';
   }
 
   private String determineLanguage(boolean usePre, String content, int start, int endOfStartLine) {
@@ -133,7 +133,7 @@ public class SyntaxHighlighter implements ContentFilter {
     }
   }
 
-  
+
   private String formatSource(String language, String source) {
     if (language.equals("java")) {
       return formatCode(source, "JavaLexer", "pygments.lexers.jvm", "java");
@@ -143,7 +143,7 @@ public class SyntaxHighlighter implements ContentFilter {
 
     } else if (language.equals("groovy")) {
       return formatCode(source, "GroovyLexer", "pygments.lexers.jvm", "groovy");
-    
+
     } else if (language.equals("scala")) {
       return formatCode(source, "ScalaLexer", "pygments.lexers.jvm", "scala");
 
@@ -155,40 +155,49 @@ public class SyntaxHighlighter implements ContentFilter {
 
     } else if (language.equals("sql")) {
       return formatCode(source, "SqlLexer", "pygments.lexers.sql", "sql");
-    
+
     } else if (language.equals("xml")) {
       return formatCode(source, "XmlLexer", "pygments.lexers.html", "xml");
-    
+
     } else if (language.equals("properties")) {
       return formatCode(source, "PropertiesLexer", "pygments.lexers.configs", "properties");
-    
+
     } else if (language.equals("sh")) {
       return formatCode(source, "BashLexer", "pygments.lexers.shell", "sh");
-    
+
+    } else if (language.equals("console")) {
+      return formatCode(source, "PyPyLogLexer", "pygments.lexers.console", "console");
+
+    } else if (language.equals("text")) {
+      return formatCode(source, "TextLexer", "pygments.lexers.special", "text");
+
+    } else if (language.equals("yml")) {
+      return formatCode(source, "YamlLexer", "pygments.lexers.data", "yml");
     }
+
 
     return source;
   }
-  
+
   protected String formatCode(String code, String lexer, String lexerPackage, String language) {
 
     // Set a variable with the content you want to work with
     interpreter.set("code", code);
 
-    String fromClause = "from "+lexerPackage+" import "+lexer+"\n";
+    String fromClause = "from " + lexerPackage + " import " + lexer + "\n";
 
     String command =
-        "from pygments import highlight\n"
+      "from pygments import highlight\n"
         + fromClause
         + "from pygments.formatters import HtmlFormatter\n"
-        + "\nresult = highlight(code, "+lexer+"(), HtmlFormatter())";
+        + "\nresult = highlight(code, " + lexer + "(), HtmlFormatter())";
 
     interpreter.exec(command);
 
     // Get the result that has been set in a variable
     String codeHighlighted = interpreter.get("result", String.class);
-    
-    return "<div class=\"syntax "+language+"\">"+codeHighlighted+"</div>";
+
+    return "<div class=\"syntax " + language + "\">" + codeHighlighted + "</div>";
   }
 
 }
