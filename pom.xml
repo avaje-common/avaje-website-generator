@@ -20,7 +20,7 @@
   </licenses>
 
   <scm>
-    <developerConnection>scm:git:git@:github.com:avaje-common/avaje-website-generator.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:avaje-common/avaje-website-generator.git</developerConnection>
     <url>https://github.com/avaje-common/avaje-website-generator.git</url>
     <tag>HEAD</tag>
   </scm>
