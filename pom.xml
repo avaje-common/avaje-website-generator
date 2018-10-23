@@ -8,9 +8,8 @@
   <parent>
     <groupId>org.avaje</groupId>
     <artifactId>avaje-javaparent</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
   </parent>
-
 
   <licenses>
     <license>
@@ -21,9 +20,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:https://github.com/avaje-common/avaje-website-generator.git</connection>
-    <developerConnection>scm:git:https://github.com/avaje-common/avaje-website-generator.git</developerConnection>
+    <developerConnection>scm:git:git@:github.com:avaje-common/avaje-website-generator.git</developerConnection>
     <url>https://github.com/avaje-common/avaje-website-generator.git</url>
+    <tag>HEAD</tag>
   </scm>
 
 
