@@ -20,6 +20,24 @@ public class SyntaxHighlighterTest {
   }
 
   @Test
+  public void testFilterKotlin() throws Exception {
+
+    String code = "@Entity\n" +
+      "class Customer(name : String) {\n" +
+      "\n" +
+      "  @Id\n" +
+      "  var id: Long = 0\n" +
+      "\n" +
+      "  @Length(100)\n" +
+      "  var name: String = name\n" +
+      "\n" +
+      "}";
+    String out = highlighter.formatCode(code, "KotlinLexer", "pygments.lexers.jvm", "kotlin");
+
+    System.out.println(out);
+  }
+
+  @Test
   public void test() throws IOException {
 
     String content = IOUtil.readUtf8(this.getClass().getResourceAsStream("/input/padded.html"));

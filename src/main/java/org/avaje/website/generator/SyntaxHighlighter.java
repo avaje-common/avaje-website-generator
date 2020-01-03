@@ -11,7 +11,8 @@ public class SyntaxHighlighter implements ContentFilter {
 
   private PythonInterpreter interpreter = new PythonInterpreter();
 
-  private final HighlightFields highlightFields = new HighlightFields();
+  private final HighlightFields javaHighlightFields = new HighlightFields();
+  private final HighlightFields kotlinHighlightFields = new HighlightFieldsKotlin();
 
   @Override
   public String filter(String content) {
@@ -46,16 +47,25 @@ public class SyntaxHighlighter implements ContentFilter {
 
     String language = determineLanguage(usePre, content, start, endOfStartLine);
 
-    StringBuilder buffer = new StringBuilder(content.length() + 1000);
+    boolean javaLang = "java".equalsIgnoreCase(language);
+    boolean kotlinLang = "kotlin".equalsIgnoreCase(language);
 
     String rawSource = content.substring(endOfStartLine + 1, end);
-    rawSource = trimRawSource(rawSource);
-    String highlightedSource = formatSource(language, rawSource);
-    if ("java".equalsIgnoreCase(language)) {
-      highlightedSource = highlightFields.highlight(highlightedSource);
+    if (javaLang || kotlinLang) {
+      rawSource = escapeLtGt(rawSource);
     }
 
-    buffer.append(content.substring(0, start));
+    rawSource = trimRawSource(rawSource);
+    String highlightedSource = formatSource(language, rawSource);
+
+    if (javaLang) {
+      highlightedSource = javaHighlightFields.highlight(highlightedSource);
+    } else if (kotlinLang) {
+      highlightedSource = kotlinHighlightFields.highlight(highlightedSource);
+    }
+
+    StringBuilder buffer = new StringBuilder(content.length() + 1000);
+    buffer.append(content, 0, start);
     buffer.append(highlightedSource);
 
     String remainder = content.substring(endOfEnd);
@@ -63,6 +73,11 @@ public class SyntaxHighlighter implements ContentFilter {
     return buffer.toString();
   }
 
+  private String escapeLtGt(String content) {
+    content = content.replace("<|","<");
+    content = content.replace("|>",">");
+    return content;
+  }
 
   protected String trimRawSource(String rawSource) {
 

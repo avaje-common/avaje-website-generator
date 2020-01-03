@@ -9,14 +9,26 @@ import java.io.StringReader;
  */
 public class HighlightFields {
 
-  private final String withField = "<span class=\"o\">.</span><span class=\"na field\">";
-  private final String withEnd = "</span>";
+  private final String withField;
+  private final String withEnd;
 
-  private final String startMatch = "<span class=\"o\">.</span><span class=\"na\">";
-  private final String endMatch = "</span><span class=\"o\">.</span>";
+  private final String startMatch;
+  private final String endMatch;
 
   public HighlightFields() {
+    withField = "<span class=\"o\">.</span><span class=\"na field\">";
+    withEnd = "</span>";
 
+    startMatch = "<span class=\"o\">.</span><span class=\"na\">";
+    endMatch = "</span><span class=\"o\">.</span>";
+  }
+
+  public HighlightFields(boolean kotlin) {
+    withField = "<span class=\"p\">.</span><span class=\"n field\">";
+    withEnd = "</span>";
+
+    startMatch = "<span class=\"p\">.</span><span class=\"n\">";
+    endMatch = "</span><span class=\"p\">.</span>";
   }
 
   /**
@@ -48,9 +60,16 @@ public class HighlightFields {
     }
   }
 
-  private String process(String line) {
+  String process(String line) {
 
-    StringBuilder sb =new StringBuilder(line.length());
+    line = line.replace("<span class=\"n\">var</span>", "<span class=\"k\">var</span>");
+    line = line.replace("<span class=\"n\">val</span>", "<span class=\"k\">val</span>");
+
+    if (line.contains("<span class=\"nd\">@")) {
+      line = line.replace("<span class=\"n\">", "<span class=\"nx\">");
+    }
+
+    StringBuilder sb = new StringBuilder(line.length());
     process(0, line, sb);
     return sb.toString();
   }
@@ -86,7 +105,7 @@ public class HighlightFields {
       String val = line.substring(at, pos);
       sb.append(val);
       sb.append(withField);
-      int litStart =  pos + startMatch.length();
+      int litStart = pos + startMatch.length();
       String literal = line.substring(litStart, pos2);
       sb.append(literal);
       sb.append(withEnd);

@@ -7,6 +7,14 @@ public class HighlightFieldsTest {
   HighlightFields highlightFields = new HighlightFields();
 
   @Test
+  public void testVal() {
+    String source = "some </span><span class=\"n\">val</span>other";
+    String val = highlightFields.highlight(source);
+    System.out.println(val);
+    System.out.println(source);
+  }
+
+  @Test
   public void testHighlight() throws Exception {
 
     String source = "<span class=\"o\">.</span><span class=\"na\">id</span><span class=\"o\">.</span><span class=\"na\">greaterThan</span><span class=\"o\">(</span><span class=\"mi\">12</span><span class=\"o\">)</span>";
