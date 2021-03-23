@@ -64,6 +64,9 @@ public class SyntaxHighlighter implements ContentFilter {
       highlightedSource = kotlinHighlightFields.highlight(highlightedSource);
     }
 
+    // html encode $ such that freemarker doesn't process it
+    highlightedSource = highlightedSource.replace("$", "&#36;");
+
     StringBuilder buffer = new StringBuilder(content.length() + 1000);
     buffer.append(content, 0, start);
     buffer.append(highlightedSource);
